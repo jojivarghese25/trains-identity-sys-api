@@ -1,0 +1,77 @@
+{
+    "id": "00uoctog2wbrgLc0o4x6",
+    "status": "ACTIVE",
+    "created": "2020-08-03T14:44:48.000Z",
+    "activated": "2020-08-03T14:44:49.000Z",
+    "statusChanged": "2020-08-03T14:44:49.000Z",
+    "lastLogin": null,
+    "lastUpdated": "2020-08-03T14:44:49.000Z",
+    "passwordChanged": "2020-08-03T14:44:48.000Z",
+    "type": {
+        "id": "otym04f56UI7yXXn34x6"
+    },
+    "profile": {
+        "firstName": "p",
+        "lastName": "varghese",
+        "mobilePhone": null,
+        "secondEmail": null,
+        "login": "pg1@gmail.com",
+        "email": "pg1@gmail.com"
+    },
+    "credentials": {
+        "password": {},
+        "emails": [
+            {
+                "value": "pg1@gmail.com",
+                "status": "VERIFIED",
+                "type": "PRIMARY"
+            }
+        ],
+        "recovery_question": {
+            "question": "favourite destination?"
+        },
+        "provider": {
+            "type": "OKTA",
+            "name": "OKTA"
+        }
+    },
+    "_links": {
+        "suspend": {
+            "href": "https://dev-536244.okta.com/api/v1/users/00uoctog2wbrgLc0o4x6/lifecycle/suspend",
+            "method": "POST"
+        },
+        "schema": {
+            "href": "https://dev-536244.okta.com/api/v1/meta/schemas/user/oscm04f56UI7yXXn34x6"
+        },
+        "resetPassword": {
+            "href": "https://dev-536244.okta.com/api/v1/users/00uoctog2wbrgLc0o4x6/lifecycle/reset_password",
+            "method": "POST"
+        },
+        "forgotPassword": {
+            "href": "https://dev-536244.okta.com/api/v1/users/00uoctog2wbrgLc0o4x6/credentials/forgot_password",
+            "method": "POST"
+        },
+        "expirePassword": {
+            "href": "https://dev-536244.okta.com/api/v1/users/00uoctog2wbrgLc0o4x6/lifecycle/expire_password",
+            "method": "POST"
+        },
+        "changeRecoveryQuestion": {
+            "href": "https://dev-536244.okta.com/api/v1/users/00uoctog2wbrgLc0o4x6/credentials/change_recovery_question",
+            "method": "POST"
+        },
+        "self": {
+            "href": "https://dev-536244.okta.com/api/v1/users/00uoctog2wbrgLc0o4x6"
+        },
+        "type": {
+            "href": "https://dev-536244.okta.com/api/v1/meta/types/user/otym04f56UI7yXXn34x6"
+        },
+        "changePassword": {
+            "href": "https://dev-536244.okta.com/api/v1/users/00uoctog2wbrgLc0o4x6/credentials/change_password",
+            "method": "POST"
+        },
+        "deactivate": {
+            "href": "https://dev-536244.okta.com/api/v1/users/00uoctog2wbrgLc0o4x6/lifecycle/deactivate",
+            "method": "POST"
+        }
+    }
+}

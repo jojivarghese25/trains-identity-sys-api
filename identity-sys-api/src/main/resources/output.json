@@ -1,0 +1,15 @@
+{
+  "profile": {
+    "firstName": "Isaac",
+    "lastName": "Brock",
+    "email": "isaac@gmail.com",
+    "login": "isaac@gmail.com"
+  },
+  "credentials": {
+    "password" : { "value": "Abccdef123" },
+    "recovery_question": {
+      "question": "Who's a major player in the cowboy scene?",
+      "answer": "Annie Oakley"
+    }
+  }
+}

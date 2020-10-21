@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<configuration doc:name="Configuration" doc:id="eaa14fde-35c9-4389-b4b8-b0e02f05f692" defaultErrorHandler-ref="okta-globalError_Handler" />
+	<error-handler name="okta-globalError_Handler" doc:id="f3212f53-c2a0-4307-b7ab-35ca6084e5c2" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2ee0bd78-1d5d-420e-b9af-480fd836ac60" type="CONNECTIVITY">
+			<set-variable value="504" doc:name="Set Variable" doc:id="731f518c-b031-474e-9884-141bd83597f4" variableName="httpStatus"/>
+			<flow-ref doc:name="Flow Reference" doc:id="1dc993b9-6ccc-499a-a44d-aadd38caac48" name="Generate_error_response_flow"/>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="05ab20d5-1b76-4258-9d69-5a91b8022932" type="SERVER_SECURITY">
+			<choice doc:name="Choice" doc:id="996381c1-16df-48af-969c-3b781ea70d6a" >
+				<when expression="#[error.errorType.identifier=='UNAUTHORIZED']">
+					<set-variable value="401" doc:name="Http response status" doc:id="a88fdeea-f635-43b5-9ee1-46d7ec9a2f15" variableName="httpStatus"/>
+				</when>
+				<otherwise >
+					<set-variable value="403" doc:name="Set Variable" doc:id="63934f45-a952-4328-bbde-9bec9298bca7" variableName="httpStatus"/>
+				</otherwise>
+			</choice>
+			<flow-ref doc:name="Flow Reference" doc:id="1f0b20f9-c2e0-4e40-bcc7-9e1355d2c8a0" name="Generate_error_response_flow"/>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="d2070bf8-4c4c-46a0-ac80-674548345bf2" type="USER:DUPLICATE">
+			<set-variable value="400" doc:name="Set httpStatus" doc:id="eb0ed674-e4dc-416d-9e0d-1fe7c1566895" variableName="httpStatus"/>
+			<set-variable value='"the user is a duplicate user"' doc:name="Set Variable" doc:id="9d0918e4-21c8-402b-822d-58e88bd991bd" variableName="errormessage"/>
+			<ee:transform doc:name="Transform Message" doc:id="66856891-a607-4414-8cb2-44dc8a354a24" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	code: vars.httpStatus,
+	message: error.errorType.identifier,
+	description: error.description,
+	dateTime: now() as String 
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+	</error-handler>
+	<flow name="Generate_error_response_flow" doc:id="c271b615-dab2-4fbd-94e0-96d68d0000c3" >
+		<ee:transform doc:name="Transform Message" doc:id="49b2dc06-0f34-4876-8d90-7d7183802635" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+---
+{
+	code: vars.httpStatus,
+	message: error.errorType.identifier,
+	description: error.description,
+	dateTime: now() as String 
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="Logger" doc:id="3c726f65-33f1-4658-9038-5b60baaefe08" config-ref="JSON_Logger_Config" message="global error response_okta"/>
+	</flow>
+</mule>

@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="input_json" format="json">
+      <types:shape format="weave" example="input.json"><![CDATA[%dw 2.0
+
+type input_json = {|
+  profile: {|
+    firstName: String, 
+    lastName: String, 
+    email: String, 
+    login: String
+  |}, 
+  credentials: {|
+    password: {| value: String |}, 
+    recoveryQuestion: {|
+      question: String, 
+      answer: String
+    |}
+  |}
+|} {"example": "{\\\"profile\\\":{\\\"firstName\\\":\\\"Isaac\\\",\\\"lastName\\\":\\\"Brock\\\",\\\"email\\\":\\\"isaac@gmail.com\\\",\\\"login\\\":\\\"isaac@gmail.com\\\"},\\\"credentials\\\":{\\\"password\\\":{\\\"value\\\":\\\"Abccdef123\\\"},\\\"recoveryQuestion\\\":{\\\"question\\\":\\\"Who's a major player in the cowboy scene?\\\",\\\"answer\\\":\\\"Annie Oakley\\\"}}}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="output_json" format="json">
+      <types:shape format="weave" example="output.json"><![CDATA[%dw 2.0
+
+type output_json = {|
+  profile: {|
+    firstName: String, 
+    lastName: String, 
+    email: String, 
+    login: String
+  |}, 
+  credentials: {|
+    password: {| value: String |}, 
+    recovery_question: {|
+      question: String, 
+      answer: String
+    |}
+  |}
+|} {"example": "{\\\"profile\\\":{\\\"firstName\\\":\\\"Isaac\\\",\\\"lastName\\\":\\\"Brock\\\",\\\"email\\\":\\\"isaac@gmail.com\\\",\\\"login\\\":\\\"isaac@gmail.com\\\"},\\\"credentials\\\":{\\\"password\\\":{\\\"value\\\":\\\"Abccdef123\\\"},\\\"recovery_question\\\":{\\\"question\\\":\\\"Who's a major player in the cowboy scene?\\\",\\\"answer\\\":\\\"Annie Oakley\\\"}}}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="forgot_pass_json" format="json">
+      <types:shape format="weave" example="for_pass_ot.json"><![CDATA[%dw 2.0
+
+type forgot_pass_json = {|
+  password: {| value: String |}, 
+  recovery_question: {| answer: String |}
+|} {"example": "{\\\"password\\\":{\\\"value\\\":\\\"{{password}}\\\"},\\\"recovery_question\\\":{\\\"answer\\\":\\\"Annie Oakley\\\"}}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="oktachange_json" format="json">
+      <types:shape format="weave" example="oktachagepass.json"><![CDATA[%dw 2.0
+
+type oktachange_json = {|
+  userId: String, 
+  oldPassword: String, 
+  newPassword: String
+|} {"example": "{\\\"userId\\\":\\\"00uoc2rlxkYwdebF44x6\\\",\\\"oldPassword\\\":\\\"123Ajjj1\\\",\\\"newPassword\\\":\\\"Bcdef1234\\\"}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="authenticateinput_json" format="json">
+      <types:shape format="weave" example="authenticate-input.json"><![CDATA[%dw 2.0
+
+type authenticateinput_json = {|
+  username: String, 
+  password: String
+|} {"example": "{\\\"username\\\":\\\"joe sham\\\",\\\"password\\\":\\\"123Ajjj1\\\"}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="forgetrecov_json" format="json">
+      <types:shape format="weave" example="forgpass_recover.json"><![CDATA[%dw 2.0
+
+type forgetrecov_json = {|
+  userId: String, 
+  password: {| value: String |}, 
+  recovery_question: {| answer: String |}
+|} {"example": "{\\\"userId\\\":\\\"xyz@gmail.com\\\",\\\"password\\\":{\\\"value\\\":\\\"345AJkkkkk\\\"},\\\"recovery_question\\\":{\\\"answer\\\":\\\"teddybear\\\"}}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="outputpayload_json" format="json">
+      <types:shape format="weave" example="arraypayload.json"><![CDATA[%dw 2.0
+
+type outputpayload_json = {|
+  userId: String, 
+  oldPassword: {| value: String |}, 
+  newPassword: {| value: String |}
+|} {"example": "{\\\"userId\\\":\\\"xyz@gmail.com\\\",\\\"oldPassword\\\":{\\\"value\\\":\\\"Ammm7890j\\\"},\\\"newPassword\\\":{\\\"value\\\":\\\"uTVM,TPw55\\\"}}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#abf80ed5-ceda-4fdb-b2f6-77ef587023de">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="input_json"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="output_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#76fdccf7-9fe3-4a58-b6c4-2b85c1d0b145">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="oktachange_json"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="outputpayload_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#f5bcd24c-8057-4606-b788-725c6ce6c410">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="authenticateinput_json"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="authenticateinput_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#5cdfc5dc-f7a7-44fc-add8-59c17e125a90">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="forgetrecov_json"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="forgot_pass_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
